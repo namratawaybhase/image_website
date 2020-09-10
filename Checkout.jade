@@ -1,0 +1,101 @@
+import '/style.css';
+
+extends layout
+block content
+        script.
+            $( document ).ready(function() {
+                console.log( "ready!" );
+                
+            });
+            var finalize = function () {
+                var firstname = $("#firstname").val();
+                var lastname = $("#lastname").val();
+                var deliveryAddress = $("#deliveryAddress").val();
+                var phoneNumber = $("#phoneNumber").val();
+                var sales = $("input[name='salesType']:checked").val();
+                var creditcardType = $("input[name='creditcardType']:checked").val();
+                var creditNumber = $("#creditNumber").val();
+                var creditExp = $( "#creditExp" ).val();
+                var amount =$("#amount").val();
+                var newItem = {
+                    'firstName': firstname,
+                    'lastName': lastname,
+                    'deliveryAddress': deliveryAddress,
+                    'phoneNumber':phoneNumber,
+                    'sales' : sales,
+                    'creditcardType':creditcardType,
+                    'creditNumber':creditNumber,
+                    'creditExp':creditExp,
+                    'amount':amount
+                };
+                
+                
+                $.ajax({
+                    type: 'POST',
+                    data: newItem,
+                    url: '/checkout',
+                    dataType: 'JSON',
+                    error: function (jqXHR, error, errorThrown) {
+                        //display error
+                    },
+                    success : function(res) {
+                        alert("Success");
+                        $("body").html(res);
+                    }
+                }).done(function (response) {
+                    alert('Error: ' + response.msg);
+                });
+            };
+        div 
+        
+            html
+              head
+                style
+                  include style.css
+            table.table.table-hover
+                thead.thead-dark
+                    tr
+                        th First Name
+                        th Last Name
+                        th Delivery Address 
+                        th Telephone Number 
+                        th Sales Type
+                        th Credit Card Type
+                        th Credit Card Number
+                        th Credit Card Expiration Date
+                        th Sales Amount
+                        th Place order
+                tbody
+                    tr
+                        td
+                            input(type='text' id='firstname' min=1 maxlength=20)
+                        td
+                            input(type='text' id='lastname')
+                        td
+                            input(type='text' id='deliveryAddress')
+                        td
+                            input(type='text' id='phoneNumber')
+
+                        td
+                            label Cash
+                            input(type='radio' value='cash' name='salesType' checked='checked')
+                            br
+                            label Credit 
+                            input(type='radio' value='credit' name='salesType')
+                            br
+                        td
+                            label AX
+                            input(type='radio' value='ax' name='creditcardType' checked='checked')
+                            br
+                            label V 
+                            input(type='radio' value='v' name='creditcardType')
+                            br
+                        td
+                            input(id='creditNumber' type='tel' class="cc-number" pattern='\d*' maxlength='19'  placeholder="Card Number")
+                        td
+                            input(type='text' id='creditExp' placeholder="MM / YY" )
+                        td
+                            label(id='salesAmt' value= Total)
+                        td 
+                            input(onclick='finalize()' id='finalize' type='button' value='Finalize')
+                        

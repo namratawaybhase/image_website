@@ -1,0 +1,100 @@
+//- 
+    To change this license header, choose License Headers in Project Properties.
+    To change this template file, choose Tools | Templates
+    and open the template in the editor.
+ 
+extends layout
+block content
+    script(src='/javascripts/global.js')
+    script.
+        var costs = {
+            "Good": {"hard-copy": 8.99, "poster": 9.99},
+            "Very Good":{"hard-copy": 9.99, "poster": 10.99},
+            "Excellent": {"hard-copy": 10.99, "poster": 11.99}
+        };
+        var something = function() {
+            $("#total").text("10");
+            var image = $("input[name='TypeOfImage']:checked").val();
+            var quantity = $("#quantity").val();
+            var quality = $( "#quality option:selected" ).text();
+            var total = quantity*costs[quality][image];
+            if ($('#glossy').is(":checked"))
+                total += 2;
+            $("#total").text(total);
+        }
+        var addToCart = function() {
+            console.log("Adding to cart");
+            var image = $("input[name='TypeOfImage']:checked").val();
+            var quantity = $("#quantity").val();
+            var quality = $( "#quality option:selected" ).text();
+            var total = quantity*costs[quality][image];
+            var newItem = {
+                'Type': image,
+                'Quality':quality,
+                'Quantity': quantity,
+                'Glossy':$('#glossy').is(":checked"),
+                'Total': total
+            }
+            $.ajax({
+                type:'POST',
+                data: newItem,
+                url:'/order',
+                dataType:'JSON'
+            }).done(function(response){
+                alert('Error: ' + response.msg);
+            });
+        }
+    div
+      html
+          head
+            style
+              include style.css
+        table.table.table-hover
+      
+            thead
+                tr
+                    th Quality of Image
+                    th Types of items
+                    th Glossy finish
+                    th Quantity
+                    th Calculate
+                    th Add to Cart
+                    th Go to Cart
+                    th Cost
+            tbody
+                tr
+                    td
+                        select(id='quality')
+                            option Good
+                            option Very Good
+                            option Excellent
+                    td
+                        input(type='radio' value='hard-copy' name='TypeOfImage' checked='checked')
+                        label Hard Copy
+                        br
+                        input(type='radio' value='poster' name='TypeOfImage')
+                        label Poster
+                        br
+                        input(type='radio',value='coffee' name='TypeOfImage')
+                        label Coffee Mug
+                        br
+                        input(type='radio',value='tshirt' name='TypeOfImage')
+                        label T-Shirt
+                        br
+                    td
+                        label Yes- 
+                        input(id='glossy' type='checkbox' checked)
+                    td
+                        input(type='number' id='quantity' min="1" oninput="this.value = Math.abs(this.value)")
+                    td
+                        input(onclick='something()' id='calc' type='button' value='Calculate')
+                        
+                    td
+                        input(onclick='addToCart()' type='button' value='Add to Cart')
+                    td
+                        a(class='button', href='/cart') Go to Cart
+                    td
+                        label(id='total')
+                        
+                        
+                

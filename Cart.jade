@@ -1,0 +1,27 @@
+extends layout
+block content
+    section
+        html
+              head
+                style
+                  include style.css
+        table.table.table-hover
+            thead
+                tr
+                    th Quality of Image
+                    th Types of items
+                    th Glossy finish
+                    th Quantity
+                    th Remove from Cart
+                    th Cost
+            tbody
+                each item in orders
+                    tr
+                        td #{item.Quality}
+                        td #{item.Type}
+                        td #{item.Glossy}
+                        td #{item.Quantity}
+                        td
+                            a(href='/api/delete/' + item.id) Delete
+                        td #{item.Total}
+                            
